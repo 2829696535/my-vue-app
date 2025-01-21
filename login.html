@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <link href="//unpkg.com/layui@2.9.18/dist/css/layui.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f2f2f2;
+        }
+        .login-container {
+            width: 400px;
+            margin: 100px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h2 style="text-align: center;">用户登录</h2>
+    <form class="layui-form" id="loginForm">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-block">
+                <input type="text" name="username" required lay-verify="required" placeholder="请输入用户名" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="login">登录</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="//unpkg.com/layui@2.9.18/dist/layui.js"></script>
+<script>
+    layui.use(['form', 'layer'], function() {
+        var form = layui.form;
+        var layer = layui.layer;
+
+        // 监听登录表单提交
+        form.on('submit(login)', function(data) {
+            $.ajax({
+                url: 'http://localhost:8080/index/login', // 后端登录接口
+                type: 'post',
+                data: data.field,  // 表单数据
+                dataType: 'json',   // 确保后端返回的是 JSON 格式
+                success: function(response) {
+
+                window.location.href = "/"
+                    // 如果返回的数据包含角色为 admin，表示登录成功
+                    if (response.data.role === "admin") {
+                        layer.msg('登录成功', { icon: 1 });
+                        sessionStorage.setItem('username', response.data.username);
+
+                        // 登录成功后跳转到首页或其他页面
+                       
+                    } else {
+
+                        // 如果角色不匹配或返回错误信息
+                        layer.alert(response.message || '登录失败，请重试。', { title: '错误' });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // 请求失败时，打印错误信息
+                    console.error('请求失败:', error);
+
+                    // 提示用户请求失败
+                    layer.alert('请求失败，请检查网络连接。', { title: '错误' });
+                }
+            });
+            return false; // 阻止表单的默认提交
+        });
+    });
+
+</script>
+</body>
+</html>
