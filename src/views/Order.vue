@@ -25,14 +25,7 @@
           </el-col>
           <el-col :span="4">
             <el-form-item label="车牌号" class="custom-font">
-              <el-select v-model="queryParams.carCard" placeholder="请选择车牌号">
-                <el-option
-                  v-for="car in carNumbers"
-                  :key="car"
-                  :label="car"
-                  :value="car">
-                </el-option>
-              </el-select>
+              <el-input v-model="queryParams.carCard" placeholder="请选择车牌号"/>
             </el-form-item>
           </el-col>
           <el-col :span="4">
