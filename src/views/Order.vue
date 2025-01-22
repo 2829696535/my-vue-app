@@ -25,7 +25,14 @@
           </el-col>
           <el-col :span="4">
             <el-form-item label="车牌号" class="custom-font">
-              <el-input v-model="queryParams.carCard"></el-input>
+              <el-select v-model="queryParams.carCard" placeholder="请选择车牌号">
+                <el-option
+                  v-for="car in carNumbers"
+                  :key="car"
+                  :label="car"
+                  :value="car">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="4">
@@ -88,41 +95,48 @@
       :page-sizes="[10, 20, 30, 40]" :page-size="pageSize" layout="total, sizes, prev, pager, next"
       :total="total"></el-pagination>
     <!-- 订单添加/编辑对话框 -->
-    <el-dialog title="新增订单" v-model="showDialog" width="80%">
+    <el-dialog title="新增订单" v-model="showDialog" width="50%" :modal-style="{ borderRadius: '0' }" class="custom-dialog">
       <el-form :model="newOrder" label-width="80px">
         <el-row>
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item label="员工名称">
               <el-input v-model="username" disabled></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item label="订单金额">
               <el-input-number v-model="newOrder.amount" :precision="1" :step="0.1" :max="90000000" />
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item label="手机号">
               <el-input v-model="newOrder.customerPhoneNumber" style="width: 240px" placeholder="请输入客户手机号" clearable
                 @blur="handlePhoneNumberBlur" />
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item label="客户名">
               <el-input v-model="newOrder.customerName" disabled style="width: 240px" placeholder="请输入客户名" clearable />
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item label="车牌号">
-              <el-input v-model="newOrder.carCard" style="width: 240px" placeholder="请输入车牌号" clearable />
+              <el-select v-model="newOrder.carCard" placeholder="请选择车牌号" style="width: 240px">
+                <el-option
+                  v-for="car in carNumbers"
+                  :key="car"
+                  :label="car"
+                  :value="car">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item label="订单状态">
               <el-input v-model="newOrder.status" disabled></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="24">
             <el-form-item>
               <el-button type="primary" @click="saveOrder" icon="Check">
                 添加订单
@@ -140,35 +154,42 @@
     </el-dialog>
 
     <!-- 编辑订单对话框 -->
-    <el-dialog title="编辑订单" v-model="showEditDialog" width="80%">
+    <el-dialog title="编辑订单" v-model="showEditDialog" width="50%" :modal-style="{ borderRadius: '0' }" class="custom-dialog">
       <el-form :model="editOrderData" label-width="80px">
         <el-row>
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item label="员工名称">
               <el-input v-model="username" disabled></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item label="订单金额">
               <el-input-number v-model="editOrderData.amount" :precision="1" :step="0.1" :max="90000000" />
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item label="手机号">
               <el-input v-model="editOrderData.customerPhoneNumber" style="width: 240px" placeholder="请输入客户手机号" clearable />
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item label="客户名">
               <el-input v-model="editOrderData.customerName" style="width: 240px" placeholder="请输入客户名" clearable />
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item label="车牌号">
-              <el-input v-model="editOrderData.carCard" style="width: 240px" placeholder="请输入车牌号" clearable />
+              <el-select v-model="editOrderData.carCard" placeholder="请选择车牌号" style="width: 240px">
+                <el-option
+                  v-for="car in carNumbers"
+                  :key="car"
+                  :label="car"
+                  :value="car">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item label="订单状态">
               <el-select v-model="editOrderData.status" placeholder="请选择状态">
                 <el-option label="未建立" value="未建立"></el-option>
@@ -177,9 +198,9 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="24">
             <el-form-item>
-              <el-button type="primary" @click="updateOrder" icon="Check">
+              <el-button type="primary" @click="updateOrder" icon="Check" >
                 保存修改
               </el-button>
               <el-button @click="closeEditDialog" icon="Close">取消</el-button>
@@ -211,6 +232,7 @@ export default {
     return {
       username: sessionStorage.getItem('username'),
       tableData: [],
+      carNumbers: [],
       queryParams: {
         price: "",
         orderName: '',
@@ -261,7 +283,7 @@ export default {
       axios.post('http://localhost:8080/Order/getCustomerInfo', params)
         .then((response) => {
         this.newOrder.customerName= response.data.customerName
-        this.newOrder
+        this.carNumbers = response.data.carInfo.map(item => `${item.carName}|${item.car_card}`);
         })
         .catch(() => {
           ElMessage.error('获取列表失败，请检查网络或联系管理员');
@@ -316,7 +338,7 @@ export default {
         price: this.newOrder.amount,
         customerName: this.newOrder.customerName,
         phone: this.newOrder.customerPhoneNumber,
-        carCard: this.newOrder.carCard,
+        carCard: this.newOrder.carCard.split('|')[1],
       };
       axios.post('http://localhost:8080/Order/create', params)
         .then((response) => {
@@ -327,8 +349,6 @@ export default {
         .catch(() => {
           ElMessage.error('获取用户列表失败，请检查网络或联系管理员');
         });
-
-
     },
     deleteOrder(orderId) {
       try {
@@ -409,6 +429,12 @@ export default {
 </script>
 
 <style>
+.custom-dialog .el-dialog__body {
+  max-width: 800px;
+  min-width: 800px;
+  margin: 0 auto;
+}
+
 .el-table.warning-row {
   background: rgb(159, 14, 14);
 }
@@ -474,15 +500,5 @@ export default {
 /* 最后列去掉右边框 */
 .el-table__body td:last-child {
   border-right: none;
-}
-
-/* 最后行去掉下边框 */
-.el-table__body tr:last-child td {
-  border-bottom: none;
-}
-
-/* 行hover效果 */
-.el-table__body tr:hover>td {
-  background-color: #f5f7fa !important;
 }
 </style>

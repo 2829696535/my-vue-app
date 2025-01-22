@@ -19,18 +19,17 @@
         <el-col :span="12" style="margin-top: 20px;">
             <el-card>
                 <div class="chart-card">
-                    <div ref="pieChartContainer" style="width: 100%; height: 345px;"></div>
+                    <div ref="pieChartContainer" style="width: 100%; height: 300px;"></div>
                     <div class="chart-title">
                         <h3>数据统计图（饼图）</h3>
                     </div>
                 </div>
             </el-card>
         </el-col>
-        <!-- 右侧图表部分 -->
         <el-col :span="12">
             <el-card>
                 <div class="chart-card">
-                    <div ref="lineChartContainer" style="width: 100%; height: 350px;"></div>
+                    <div ref="lineChartContainer" style="width: 100%; height: 300px;"></div>
                     <div class="chart-title">
                         <h3>数据统计图（折线图）</h3>
                     </div>
@@ -40,7 +39,7 @@
         <el-col :span="12">
             <el-card>
                 <div class="chart-card">
-                    <div ref="barChartContainer" style="width: 100%; height: 350px;"></div>
+                    <div ref="barChartContainer" style="width: 100%; height: 300px;"></div>
                     <div class="chart-title">
                         <h3>数据统计图（柱状图）</h3>
                     </div>
@@ -252,8 +251,8 @@ export default {
         border-bottom: 1px solid #ccc;
         margin-bottom: 20px;
         img {
-            width: 150px;
-            height: 150px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             margin-right: 40px;
         }
