@@ -165,7 +165,16 @@ export default {
       },
     };
   },
-  methods: {
+  created(){
+       this.getusername()
+    },
+    methods: {
+        getusername(){
+            const username = sessionStorage.getItem('username');
+            if(username== null ||username ==""){
+                window.location.href = '/'
+            }
+        },
     insertUser() {
       this.dialogFormVisible = false;
       axios.post('http://localhost:8080/api/insertUser', this.form)

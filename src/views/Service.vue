@@ -153,7 +153,16 @@ export default {
       }
     }
   },
-  methods: {
+  created(){
+       this.getusername()
+    },
+    methods: {
+        getusername(){
+            const username = sessionStorage.getItem('username');
+            if(username== null ||username ==""){
+                window.location.href = '/'
+            }
+        },
     async fetchServices() {
       this.loading = true
       try {

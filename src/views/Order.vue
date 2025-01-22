@@ -1,6 +1,9 @@
 <template>
   <div>
-    <h2>订单管理</h2>
+    <h2 class="page-title">
+      <el-icon><Setting /></el-icon>
+      <span>订单管理</span>
+    </h2>
     <!-- 搜索框 -->
     <el-form :inline="true" class="search-container">
       <el-form :model="queryParams" size="medium" class="custom-font">
@@ -35,14 +38,42 @@
       </el-col>
     </el-form>
     <!-- 订单列表 -->
-    <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="orderName" label="订单名"></el-table-column>
-      <el-table-column prop="customerName" label="客户名称"></el-table-column>
-      <el-table-column prop="carCard" label="车牌号"></el-table-column>
-      <el-table-column prop="orderPrice" label="订单金额"></el-table-column>
-      <el-table-column prop="orderDate" label="建单日期"></el-table-column>
-      <el-table-column prop="dealDate" label="完单日期"></el-table-column>
-      <el-table-column prop="orderState" label="订单状态"></el-table-column>
+    <el-table :data="tableData" stripe style="width: 100%">
+      <el-table-column prop="orderName" label="订单名" show-overflow-tooltip>
+        <template #header>
+          <el-icon><Document /></el-icon> 订单名
+        </template>
+      </el-table-column>
+      <el-table-column prop="customerName" label="客户名称" show-overflow-tooltip>
+        <template #header>
+          <el-icon><User /></el-icon> 客户名称
+        </template>
+      </el-table-column>
+      <el-table-column prop="carCard" label="车牌号" show-overflow-tooltip>
+        <template #header>
+          <el-icon><Van /></el-icon> 车牌号
+        </template>
+      </el-table-column>
+      <el-table-column prop="orderPrice" label="订单金额" show-overflow-tooltip>
+        <template #header>
+          <el-icon><Money /></el-icon> 订单金额
+        </template>
+      </el-table-column>
+      <el-table-column prop="orderDate" label="建单日期" show-overflow-tooltip>
+        <template #header>
+          <el-icon><Calendar /></el-icon> 建单日期
+        </template>
+      </el-table-column>
+      <el-table-column prop="dealDate" label="完单日期" show-overflow-tooltip>
+        <template #header>
+          <el-icon><Timer /></el-icon> 完单日期
+        </template>
+      </el-table-column>
+      <el-table-column prop="orderState" label="订单状态" show-overflow-tooltip>
+        <template #header>
+          <el-icon><Flag /></el-icon> 订单状态
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
           <el-button type="text" @click="watchOrder(scope.row)" icon="View">詳情</el-button>
@@ -163,6 +194,16 @@
 <script>
 import axios from 'axios';
 import { ElMessage, ElMessageBox, ElDialog } from 'element-plus';
+import {
+  Document,
+  User,
+  Van,
+  Money,
+  Calendar,
+  Timer,
+  Flag,
+  Setting
+} from '@element-plus/icons-vue'
 
 export default {
   name: 'OrderManagement',
@@ -206,6 +247,12 @@ export default {
     };
   },
   methods: {
+    getusername(){
+            const username = sessionStorage.getItem('username');
+            if(username== null ||username ==""){
+                window.location.href = '/'
+            }
+        },
     handlePhoneNumberBlur(event) {
       // 这里可以添加你想要执行的逻辑，例如验证手机号的有效性或进行其他操作
       let params = {
@@ -213,7 +260,8 @@ export default {
       };
       axios.post('http://localhost:8080/Order/getCustomerInfo', params)
         .then((response) => {
-         
+        this.newOrder.customerName= response.data.customerName
+        this.newOrder
         })
         .catch(() => {
           ElMessage.error('获取列表失败，请检查网络或联系管理员');
@@ -250,8 +298,6 @@ export default {
       this.fetchOrders();
     },
     showAddDialog() {
-      //添加
-      // 确保此处逻辑正确
       this.showDialog = true;
       this.dialogTitle = '添加订单';
     },
@@ -308,8 +354,6 @@ export default {
         .catch(() => {
           ElMessage.error('获取用户列表失败，请检查网络或联系管理员');
         });
-
-        
     },
     closeDialog() {
       this.showDialog = false;
@@ -358,65 +402,87 @@ export default {
     }
   },
   created() {
+    this.getusername()
     this.fetchOrders();
   }
 };
 </script>
 
-<style scoped>
-.search-container {
-  margin-bottom: 12px;
-  padding: 12px;
-  background: #f5f7fa;
-  border-radius: 4px;
+<style>
+.el-table.warning-row {
+  background: rgb(159, 14, 14);
 }
 
+.el-table.success-row {
+  background: #600cba;
+}
+
+/* 页面标题 */
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #409EFF;
+  margin-bottom: 20px;
+}
+
+/* 自定义字体类 */
 .custom-font {
-  font-size: 13px;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
 }
 
-.el-table {
-  margin-top: 12px;
-  border: 1px solid #ebeef5;
-  border-radius: 4px;
+/* 表头图标样式 */
+.el-table__header th .el-icon {
+  font-size: 18px;
+  margin-right: 6px;
 }
 
-.el-table::before {
-  height: 0;
+/* 表头样式 */
+.el-table__header th {
+  background-color: #409EFF !important;
+  color: white !important;
+  font-weight: bold;
+  border-right: 1px solid #c0c4cc !important;
+  border-bottom: 1px solid #c0c4cc !important;
 }
 
-.el-dialog {
-  border-radius: 8px;
+/* 最后列表头去掉右边框 */
+.el-table__header th:last-child {
+  border-right: none;
 }
 
-.el-dialog__header {
-  padding: 16px;
-  border-bottom: 1px solid #ebeef5;
+/* 表头内容样式 */
+.el-table__header th .cell {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  color: white !important;
 }
 
-.el-dialog__body {
-  padding: 16px;
+/* 单元格样式 */
+.el-table__body td {
+  border-right: 1px solid #c0c4cc !important;
+  border-bottom: 1px solid #c0c4cc !important;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,0.1);
 }
 
-.el-form-item {
-  margin-bottom: 12px;
+/* 最后列去掉右边框 */
+.el-table__body td:last-child {
+  border-right: none;
 }
 
-.el-pagination {
-  margin-top: 12px;
-  text-align: right;
+/* 最后行去掉下边框 */
+.el-table__body tr:last-child td {
+  border-bottom: none;
 }
 
-.el-button {
-  margin-right: 8px;
-}
-
-.el-col {
-  padding: 0 8px;
-}
-
-/* 按钮图标样式 */
-.el-button [class*="el-icon"] {
-  margin-right: 4px;
+/* 行hover效果 */
+.el-table__body tr:hover>td {
+  background-color: #f5f7fa !important;
 }
 </style>

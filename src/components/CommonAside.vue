@@ -1,6 +1,6 @@
 <template>
     <el-aside :width="width">
-        <el-menu background-color="#545c64" text-color="#fff" :collapse="isCollapse">
+        <el-menu background-color="#f0f0f0" text-color="#333" :collapse="isCollapse">
             <h3 v-if="!isCollapse">通用后台管理</h3>
             <h3 v-if="isCollapse">后台</h3>
             <el-menu-item :index="home" :key="home"  @click="clickMenu('/home')">
@@ -19,10 +19,6 @@
                 <component class="icons" is="MessageBox"></component>
                 <span>服务管理</span>
             </el-menu-item>
-            <!-- <el-menu-item v-if="userRole==='adamin'" :index="service" :key="service" @click="clickMenu('/service') ">
-                <component class="icons" is="MessageBox"></component>
-                <span>服务管理</span>
-            </el-menu-item> -->
             
              <el-menu-item v-if="userRole==='worker'" :index="service" :key="service" @click="clickMenu('/service')">
                 <component class="icons" is="MessageBox"></component>
@@ -31,10 +27,6 @@
             <el-menu-item v-if="userRole==='worker'" :index="service" :key="service" @click="clickMenu('/service')">
                 <component class="icons" is="MessageBox"></component>
                 <span>配件使用</span>
-            </el-menu-item>
-            <el-menu-item v-if="userRole==='worker'" :index="service" :key="service" @click="clickMenu('/service')">
-                <component class="icons" is="MessageBox"></component>
-                <span>联系店长</span>
             </el-menu-item>
             <el-menu-item v-if="userRole==='worker'" :index="service" :key="service" @click="clickMenu('/service')">
                 <component class="icons" is="MessageBox"></component>
@@ -67,14 +59,24 @@ const userRole = sessionStorage.getItem("role")
 }
 .el-menu {
     border-right: none;
+    background-color: transparent !important;
     h3 {
         line-height: 48px;
-        color: #fff;
+        color: #333;
         text-align: center;
+    }
+    .el-menu-item {
+        color: #333 !important;
+        &:hover {
+            background-color: rgba(0,0,0,0.1) !important;
+        }
+    }
+    .icons {
+        color: #333;
     }
 }
 .el-aside {
-    height: 100%;
     background-color: #545c64;
+  color: #333;
 }
 </style>

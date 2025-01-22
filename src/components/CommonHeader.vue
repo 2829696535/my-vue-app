@@ -41,6 +41,7 @@ const handclick = () => {
     store.state.isCollapse = !store.state.isCollapse
 }
 const logout=()=>{
+sessionStorage.clear();
 window.location.href = '/'
 }
 </script>
@@ -51,7 +52,16 @@ window.location.href = '/'
     align-items: center;
     width: 100%;
     height: 100%;
-    background-color: black;
+    background: #545c64;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.l-content, .r-content {
+    border: none;
+    margin: 0;
+    padding: 0;
 }
 .icons{
     width: 20px;

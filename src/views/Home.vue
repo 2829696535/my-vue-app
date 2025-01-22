@@ -76,7 +76,9 @@ export default {
     methods: {
         getusername(){
             const username = sessionStorage.getItem('username');
-         
+            if(username== null ||username ==""){
+                window.location.href = '/'
+            }
         },
     
         getImageUrl(user) {
@@ -260,6 +262,7 @@ export default {
         margin-left: 20px;
     }
 .chart-card {
+        height: "100%";
         display: flex;
         flex-direction: column;
         align-items: center;

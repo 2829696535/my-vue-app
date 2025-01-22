@@ -30,31 +30,39 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    background-color: #545c64;
 }
 
 .common-layout {
     height: 100%;
+    background-color: #545c64;
 }
 
 .lay-container {
-    display: flex; /* 使用 flex 布局 */
+    display: flex;
     height: 100%;
 }
 
 .right-container {
     display: flex;
     flex-direction: column;
-    flex: 1; /* 占据剩余空间 */
+    flex: 1;
 }
 
 .el-header {
-    background-color: black;
-    height: 60px; /* 设置头部高度 */
+    background-color: transparent;
+    height: 60px;
+    padding: 0;
+    margin: 0;
+    border: none;
 }
 
 .right-main {
-    flex: 1; /* 占据剩余空间 */
-    overflow: auto; /* 如果内容过多，允许滚动 */
-    padding: 20px; /* 设置内边距 */
+    flex: 1;
+    overflow: auto;
+    padding: 20px;
+    background-color: #fff;
+    margin: 20px;
+    border-radius: 4px;
 }
 </style>
