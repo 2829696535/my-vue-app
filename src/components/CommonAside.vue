@@ -57,7 +57,6 @@ const clickMenu = (path) => {
     router.push(path);
 };
 const userRole = sessionStorage.getItem("role")
-alert(userRole)
 </script>
 
 <style lang="less" scoped>

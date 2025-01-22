@@ -1,7 +1,10 @@
 <template>
   <div>
     <!-- 内联样式示例 -->
-    <h2 style="font-family: FangSong, 仿宋, serif; font-size: 24px; font-weight: bold;">用户管理</h2>
+    <h2 class="page-title">
+      <el-icon><Setting /></el-icon>
+      <span>用户管理</span>
+    </h2>
     <!-- 使用 CSS 类示例 -->
     <!--     <user-form @user-saved="fetchUsers" :user="selectedUser" class="custom-font" /> -->
     <user-table @edit-user="handleEditUser" class="custom-font" />
@@ -10,17 +13,25 @@
         <el-row>
 
           <el-col :span="8">
-            <el-form-item label="用户名" class="custom-font">
-              <el-input v-model="queryParams.username"></el-input>
-            </el-form-item>
+          <el-form-item label="用户名" class="custom-font">
+            <el-input v-model="queryParams.username" placeholder="请输入用户名">
+              <template #prefix>
+                <el-icon><User /></el-icon>
+              </template>
+            </el-input>
+          </el-form-item>
           </el-col>
           <el-col :span="6" :offset="2">
-            <el-form-item label="角色" class="custom-font">
-              <el-input v-model="queryParams.role"></el-input>
-            </el-form-item>
+          <el-form-item label="角色" class="custom-font">
+            <el-input v-model="queryParams.role" placeholder="请输入角色">
+              <template #prefix>
+                <el-icon><Key /></el-icon>
+              </template>
+            </el-input>
+          </el-form-item>
           </el-col>
           <el-col :span="3" :offset="3">
-            <el-button type="primary" @click="handleQuery">查询</el-button>
+        <el-button type="primary" @click="handleQuery" icon="Search">搜索用户</el-button>
           </el-col>
 
         </el-row>
@@ -28,19 +39,35 @@
     </el-row>
     <el-row>
 
-      <el-button type="success" @click="dialogFormVisible = true">添加用户</el-button>
+      <el-button type="success" @click="dialogFormVisible = true" icon="Plus">新增用户</el-button>
 
 
     </el-row>
     <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column prop="username" label="用户名" show-overflow-tooltip> </el-table-column>
-      <el-table-column prop="password" label="密码" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="role" label="权限" show-overflow-tooltip></el-table-column>
-      <el-table-column prop="createTime" label="时间" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="username" label="用户名" show-overflow-tooltip>
+        <template #header>
+          <el-icon><User /></el-icon> 用户名
+        </template>
+      </el-table-column>
+      <el-table-column prop="password" label="密码" show-overflow-tooltip>
+        <template #header>
+          <el-icon><Lock /></el-icon> 密码
+        </template>
+      </el-table-column>
+      <el-table-column prop="role" label="权限" show-overflow-tooltip>
+        <template #header>
+          <el-icon><Key /></el-icon> 权限
+        </template>
+      </el-table-column>
+      <el-table-column prop="createTime" label="时间" show-overflow-tooltip>
+        <template #header>
+          <el-icon><Clock /></el-icon> 时间
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button type="text" @click="editUser(scope.row)" class="custom-font">编辑</el-button>
-          <el-button type="text" @click="deleteUser(scope.row.id)" class="custom-font">删除</el-button>
+          <el-button type="text" @click="editUser(scope.row)" class="custom-font" icon="Edit">编辑</el-button>
+          <el-button type="text" @click="deleteUser(scope.row.id)" class="custom-font" icon="Delete">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,8 +94,8 @@
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="insertUser">
+        <el-button @click="dialogFormVisible = false" icon="Close">Cancel</el-button>
+        <el-button type="primary" @click="updateUser" icon="Check">
           Confirm
         </el-button>
       </div>
@@ -79,6 +106,22 @@
 <script>
 import { reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus';
+import {
+  UserFilled,
+  User,
+  Key,
+  Lock,
+  Clock,
+  Search,
+  Plus,
+  Edit,
+  Delete,
+  Close,
+  Check,
+  Setting,
+  Menu,
+  Avatar
+} from '@element-plus/icons-vue'
 import axios from 'axios';
 
 
@@ -135,6 +178,19 @@ export default {
           ElMessage.error('获取用户列表失败，请检查网络或联系管理员');
         });
     },
+    updateUser() {
+      this.dialogFormVisible = false;
+      axios.post('http://localhost:8080/api/updateUser', this.form)
+        .then((response) => {
+          if (response.data.code == 0) {
+            ElMessage.success('修改成功');
+            this.fetchUsers();
+          }
+        })
+        .catch(() => {
+          ElMessage.error('修改用户失败，请检查网络或联系管理员');
+        });
+    },
     handleQuery() {
       this.fetchUsers();
 
@@ -172,7 +228,8 @@ export default {
       this.$refs.userFormRef.resetFields();
     },
     editUser(user) {
-      this.$emit('edit-user', user);
+      this.form = { ...user };
+      this.dialogFormVisible = true;
     },
     deleteUser(id) {
       ElMessageBox.confirm('确认删除该用户？', '提示', {
@@ -220,10 +277,72 @@ export default {
   background: #600cba;
 }
 
+/* 页面标题 */
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #409EFF;
+  margin-bottom: 20px;
+}
+
 /* 自定义字体类 */
 .custom-font {
-  font-family: SongTi, 宋体, serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   font-size: 16px;
-  font-weight: normal;
+  font-weight: 500;
+}
+
+/* 表头图标样式 */
+.el-table__header th .el-icon {
+  font-size: 18px;
+  margin-right: 6px;
+}
+
+/* 表头样式 */
+.el-table__header th {
+  background-color: #409EFF !important;
+  color: white !important;
+  font-weight: bold;
+  border-right: 1px solid #c0c4cc !important;
+  border-bottom: 1px solid #c0c4cc !important;
+}
+
+/* 最后列表头去掉右边框 */
+.el-table__header th:last-child {
+  border-right: none;
+}
+
+/* 表头内容样式 */
+.el-table__header th .cell {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  color: white !important;
+}
+
+/* 单元格样式 */
+.el-table__body td {
+  border-right: 1px solid #c0c4cc !important;
+  border-bottom: 1px solid #c0c4cc !important;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,0.1);
+}
+
+/* 最后列去掉右边框 */
+.el-table__body td:last-child {
+  border-right: none;
+}
+
+/* 最后行去掉下边框 */
+.el-table__body tr:last-child td {
+  border-bottom: none;
+}
+
+/* 行hover效果 */
+.el-table__body tr:hover>td {
+  background-color: #f5f7fa !important;
 }
 </style>
