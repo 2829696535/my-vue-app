@@ -1,7 +1,9 @@
 <template>
   <div>
     <h2 class="page-title">
-      <el-icon><Setting /></el-icon>
+      <el-icon>
+        <Setting />
+      </el-icon>
       <span>订单管理</span>
     </h2>
     <!-- 搜索框 -->
@@ -25,11 +27,11 @@
           </el-col>
           <el-col :span="4">
             <el-form-item label="车牌号" class="custom-font">
-              <el-input v-model="queryParams.carCard" placeholder="请选择车牌号"/>
+              <el-input v-model="queryParams.carCard" placeholder="请选择车牌号" />
             </el-form-item>
           </el-col>
           <el-col :span="4">
-          <el-button type="primary" @click="searchOrders" icon="Search">搜索</el-button>
+            <el-button type="primary" @click="searchOrders" icon="Search">搜索</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -41,37 +43,51 @@
     <el-table :data="tableData" stripe style="width: 100%">
       <el-table-column prop="orderName" label="订单名" show-overflow-tooltip>
         <template #header>
-          <el-icon><Document /></el-icon> 订单名
+          <el-icon>
+            <Document />
+          </el-icon> 订单名
         </template>
       </el-table-column>
       <el-table-column prop="customerName" label="客户名称" show-overflow-tooltip>
         <template #header>
-          <el-icon><User /></el-icon> 客户名称
+          <el-icon>
+            <User />
+          </el-icon> 客户名称
         </template>
       </el-table-column>
       <el-table-column prop="carCard" label="车牌号" show-overflow-tooltip>
         <template #header>
-          <el-icon><Van /></el-icon> 车牌号
+          <el-icon>
+            <Van />
+          </el-icon> 车牌号
         </template>
       </el-table-column>
       <el-table-column prop="orderPrice" label="订单金额" show-overflow-tooltip>
         <template #header>
-          <el-icon><Money /></el-icon> 订单金额
+          <el-icon>
+            <Money />
+          </el-icon> 订单金额
         </template>
       </el-table-column>
       <el-table-column prop="orderDate" label="建单日期" show-overflow-tooltip>
         <template #header>
-          <el-icon><Calendar /></el-icon> 建单日期
+          <el-icon>
+            <Calendar />
+          </el-icon> 建单日期
         </template>
       </el-table-column>
       <el-table-column prop="dealDate" label="完单日期" show-overflow-tooltip>
         <template #header>
-          <el-icon><Timer /></el-icon> 完单日期
+          <el-icon>
+            <Timer />
+          </el-icon> 完单日期
         </template>
       </el-table-column>
       <el-table-column prop="orderState" label="订单状态" show-overflow-tooltip>
         <template #header>
-          <el-icon><Flag /></el-icon> 订单状态
+          <el-icon>
+            <Flag />
+          </el-icon> 订单状态
         </template>
       </el-table-column>
       <el-table-column label="操作">
@@ -79,7 +95,6 @@
           <el-button type="text" @click="watchOrder(scope.row)" icon="View">詳情</el-button>
           <el-button type="text" @click="editOrder(scope.row)" icon="Edit">编辑</el-button>
           <el-button type="text" @click="deleteOrder(scope.row.orderId)" icon="Delete">删除</el-button>
-         
         </template>
       </el-table-column>
     </el-table>
@@ -96,9 +111,18 @@
               <el-input v-model="username" disabled></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="24">
+            <el-form-item label="选择服务">
+              <el-checkbox-group v-model="newOrder.selectedServices" @change="calculateTotalPrice">
+                <el-checkbox-button v-for="service in services" :key="service.value" :label="service.value">
+                  {{ service.label }} (¥{{ service.price }})
+                </el-checkbox-button>
+              </el-checkbox-group>
+            </el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item label="订单金额">
-              <el-input-number v-model="newOrder.amount" :precision="1" :step="0.1" :max="90000000" />
+              <el-input v-model="newOrder.amount" disabled :max="90000000" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -115,11 +139,7 @@
           <el-col :span="8">
             <el-form-item label="车牌号">
               <el-select v-model="newOrder.carCard" placeholder="请选择车牌号" style="width: 240px">
-                <el-option
-                  v-for="car in carNumbers"
-                  :key="car"
-                  :label="car"
-                  :value="car">
+                <el-option v-for="car in carNumbers" :key="car" :label="car" :value="car">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -147,7 +167,8 @@
     </el-dialog>
 
     <!-- 编辑订单对话框 -->
-    <el-dialog title="编辑订单" v-model="showEditDialog" width="50%" :modal-style="{ borderRadius: '0' }" class="custom-dialog">
+    <el-dialog title="编辑订单" v-model="showEditDialog" width="50%" :modal-style="{ borderRadius: '0' }"
+      class="custom-dialog">
       <el-form :model="editOrderData" label-width="80px">
         <el-row>
           <el-col :span="8">
@@ -162,7 +183,8 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="手机号">
-              <el-input v-model="editOrderData.customerPhoneNumber" style="width: 240px" placeholder="请输入客户手机号" clearable />
+              <el-input v-model="editOrderData.customerPhoneNumber" style="width: 240px" placeholder="请输入客户手机号"
+                clearable />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -173,11 +195,7 @@
           <el-col :span="8">
             <el-form-item label="车牌号">
               <el-select v-model="editOrderData.carCard" placeholder="请选择车牌号" style="width: 240px">
-                <el-option
-                  v-for="car in carNumbers"
-                  :key="car"
-                  :label="car"
-                  :value="car">
+                <el-option v-for="car in carNumbers" :key="car" :label="car" :value="car">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -193,7 +211,7 @@
           </el-col>
           <el-col :span="24">
             <el-form-item>
-              <el-button type="primary" @click="updateOrder" icon="Check" >
+              <el-button type="primary" @click="updateOrder" icon="Check">
                 保存修改
               </el-button>
               <el-button @click="closeEditDialog" icon="Close">取消</el-button>
@@ -226,6 +244,7 @@ export default {
       username: sessionStorage.getItem('username'),
       tableData: [],
       carNumbers: [],
+      services: [],
       queryParams: {
         price: "",
         orderName: '',
@@ -237,8 +256,8 @@ export default {
       currentPage: 1,
       pageSize: 10,
       showDialog: false,
-      persintOrder:25,
-      showOrder:false,
+      persintOrder: 25,
+      showOrder: false,
       isEdit: false,
       dialogTitle: '',
       newOrder: {
@@ -248,6 +267,7 @@ export default {
         amount: 0.0,
         status: '未建立',
         username: sessionStorage.getItem('username'),
+        selectedServices: []
       },
       total: 0,
       showEditDialog: false,
@@ -262,21 +282,20 @@ export default {
     };
   },
   methods: {
-    getusername(){
-            const username = sessionStorage.getItem('username');
-            if(username== null ||username ==""){
-                window.location.href = '/'
-            }
-        },
+    getusername() {
+      const username = sessionStorage.getItem('username');
+      if (username == null || username == "") {
+        window.location.href = '/'
+      }
+    },
     handlePhoneNumberBlur(event) {
-      // 这里可以添加你想要执行的逻辑，例如验证手机号的有效性或进行其他操作
       let params = {
         phoneNumber: this.newOrder.customerPhoneNumber
       };
       axios.post('http://localhost:8080/Order/getCustomerInfo', params)
         .then((response) => {
-        this.newOrder.customerName= response.data.customerName
-        this.carNumbers = response.data.carInfo.map(item => `${item.carName}|${item.car_card}`);
+          this.newOrder.customerName = response.data.customerName
+          this.carNumbers = response.data.carInfo.map(item => `${item.carName}|${item.car_card}`);
         })
         .catch(() => {
           ElMessage.error('获取列表失败，请检查网络或联系管理员');
@@ -318,7 +337,7 @@ export default {
     },
     editOrder(order) {
       this.showEditDialog = true;
-      this.editOrderData = { 
+      this.editOrderData = {
         ...order,
         amount: order.orderPrice || 0.0,
         customerPhoneNumber: order.phone || "",
@@ -332,6 +351,7 @@ export default {
         customerName: this.newOrder.customerName,
         phone: this.newOrder.customerPhoneNumber,
         carCard: this.newOrder.carCard.split('|')[1],
+        services: this.newOrder.selectedServices
       };
       axios.post('http://localhost:8080/Order/create', params)
         .then((response) => {
@@ -358,12 +378,12 @@ export default {
       }
     },
     watchOrder(orderId) {
-     this.showOrder=true ;
-     axios.delete(`/api/orders/${orderId}`).then((response) => {
-          if (response.data.code == 0) {
-            ElMessage.success("添加成功");
-          }
-        })
+      this.showOrder = true;
+      axios.delete(`/api/orders/${orderId}`).then((response) => {
+        if (response.data.code == 0) {
+          ElMessage.success("添加成功");
+        }
+      })
         .catch(() => {
           ElMessage.error('获取用户列表失败，请检查网络或联系管理员');
         });
@@ -412,10 +432,29 @@ export default {
         status: '未建立',
         username: sessionStorage.getItem('username'),
       };
+    },
+    getService() {
+      axios.post("http://localhost:8080/Service/getService").then((res) => {
+        this.services = res.data.data.map(item => ({
+          value: item.service_id,
+          label: item.service_name,
+          price: item.service_price
+        }));
+      }).catch(error => {
+        console.error('获取服务列表失败:', error);
+        ElMessage.error('获取服务列表失败');
+      });
+    },
+    calculateTotalPrice() {
+      this.newOrder.amount = this.newOrder.selectedServices.reduce((total, serviceId) => {
+        const service = this.services.find(s => s.value === serviceId);
+        return total + (service?.price || 0);
+      }, 0);
     }
   },
   created() {
-    this.getusername()
+    this.getusername();
+    this.getService();
     this.fetchOrders();
   }
 };
@@ -493,5 +532,15 @@ export default {
 /* 最后列去掉右边框 */
 .el-table__body td:last-child {
   border-right: none;
+}
+
+/* 最后行去掉下边框 */
+.el-table__body tr:last-child td {
+  border-bottom: none;
+}
+
+/* 行hover效果 */
+.el-table__body tr:hover>td {
+  background-color: #f5f7fa !important;
 }
 </style>
