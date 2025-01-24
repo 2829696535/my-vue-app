@@ -298,7 +298,7 @@ export default {
           this.carNumbers = response.data.carInfo.map(item => `${item.carName}|${item.car_card}`);
         })
         .catch(() => {
-          ElMessage.error('获取列表失败，请检查网络或联系管理员');
+          
         });
     },
     fetchOrders() {
@@ -436,7 +436,7 @@ export default {
     getService() {
       axios.post("http://localhost:8080/Service/getService").then((res) => {
         this.services = res.data.data.map(item => ({
-          value: item.service_id,
+          value: item.service_name,
           label: item.service_name,
           price: item.service_price
         }));
